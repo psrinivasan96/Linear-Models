@@ -8900,3 +8900,23 @@ nyc_airbnb |>
     ## Warning: Removed 9962 rows containing missing values (`geom_point()`).
 
 ![](linear_models_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
+
+## Hypothesis test for categorial predictor
+
+fit a “null” and “alternative” model
+
+``` r
+fit_null = lm(price ~ stars + borough, data = nyc_airbnb)
+fit_alt = lm(price ~ stars + borough + room_type, data = nyc_airbnb)
+
+anova(fit_null, fit_alt) |>
+  broom::tidy()
+```
+
+    ## # A tibble: 2 × 7
+    ##   term                        df.residual    rss    df   sumsq statistic p.value
+    ##   <chr>                             <dbl>  <dbl> <dbl>   <dbl>     <dbl>   <dbl>
+    ## 1 price ~ stars + borough           30525 1.01e9    NA NA            NA       NA
+    ## 2 price ~ stars + borough + …       30523 9.21e8     2  8.42e7     1394.       0
+
+## Borough level differences
