@@ -1,0 +1,56 @@
+---
+title: "Linear Models"
+author: "Pavithra Srinivasan"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(p8105.datasets)
+
+set.seed(1)
+```
+
+```{r}
+data("nyc_airbnb")
+
+nyc_airbnb = 
+  nyc_airbnb |> 
+  mutate(stars = review_scores_location / 2) |> 
+  rename(
+    borough = neighbourhood_group,
+    neighborhood = neighbourhood) |> 
+  filter(borough != "Staten Island") |> 
+  select(price, stars, borough, neighborhood, room_type)
+
+```
+
+Lets fit a model!!
+```{r}
+  fit = lm(price ~ stars + borough, data = nyc_airbnb)
+```
+
+Lets look at 'fit'
+```{r}
+summary(fit)
+summary(fit)$coef
+coef(fit)
+fitted.values(fit)
+```
+
+Tidy up the output instead
+```{r}
+fit |>
+  broom::glance()
+
+```
+Tidy up the coefficients
+```{r}
+fit |>
+  broom::tidy()
+```
+
+
+
+
+
