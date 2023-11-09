@@ -8837,14 +8837,40 @@ Tidy up the coefficients
 
 ``` r
 fit |>
+  broom::tidy() |>
+  select(term, estimate, p.value) |> 
+  mutate(term = str_replace(term, "^borough", "Borough: ")) |> 
+  knitr::kable(digits = 3)
+```
+
+| term               | estimate | p.value |
+|:-------------------|---------:|--------:|
+| (Intercept)        |  -70.414 |   0.000 |
+| stars              |   31.990 |   0.000 |
+| Borough: Brooklyn  |   40.500 |   0.000 |
+| Borough: Manhattan |   90.254 |   0.000 |
+| Borough: Queens    |   13.206 |   0.145 |
+
+## Fit another model
+
+``` r
+fit =
+  nyc_airbnb |>
+  mutate(
+    borough = fct_infreq(borough),
+    room_type = fct_infreq(room_type)
+  ) |>
+  lm(price ~ stars + borough, data = _)
+
+fit |>
   broom::tidy()
 ```
 
     ## # A tibble: 5 × 5
-    ##   term             estimate std.error statistic  p.value
-    ##   <chr>               <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 (Intercept)         -70.4     14.0      -5.02 5.14e- 7
-    ## 2 stars                32.0      2.53     12.7  1.27e-36
-    ## 3 boroughBrooklyn      40.5      8.56      4.73 2.23e- 6
-    ## 4 boroughManhattan     90.3      8.57     10.5  6.64e-26
-    ## 5 boroughQueens        13.2      9.06      1.46 1.45e- 1
+    ##   term            estimate std.error statistic   p.value
+    ##   <chr>              <dbl>     <dbl>     <dbl>     <dbl>
+    ## 1 (Intercept)         19.8     12.2       1.63 1.04e-  1
+    ## 2 stars               32.0      2.53     12.7  1.27e- 36
+    ## 3 boroughBrooklyn    -49.8      2.23    -22.3  6.32e-109
+    ## 4 boroughQueens      -77.0      3.73    -20.7  2.58e- 94
+    ## 5 boroughBronx       -90.3      8.57    -10.5  6.64e- 26

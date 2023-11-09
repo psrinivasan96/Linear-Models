@@ -47,6 +47,24 @@ fit |>
 Tidy up the coefficients
 ```{r}
 fit |>
+  broom::tidy() |>
+  select(term, estimate, p.value) |> 
+  mutate(term = str_replace(term, "^borough", "Borough: ")) |> 
+  knitr::kable(digits = 3)
+
+```
+
+## Fit another model
+```{r}
+fit =
+  nyc_airbnb |>
+  mutate(
+    borough = fct_infreq(borough),
+    room_type = fct_infreq(room_type)
+  ) |>
+  lm(price ~ stars + borough, data = _)
+
+fit |>
   broom::tidy()
 ```
 
