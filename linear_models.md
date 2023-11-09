@@ -9007,3 +9007,74 @@ nyc_airbnb |>
 | Queens    |       91.58 |  9.65 |                -69.26 |               -94.97 |
 | Brooklyn  |       69.63 | 20.97 |                -92.22 |              -105.84 |
 | Manhattan |       95.69 | 27.11 |               -124.19 |              -153.64 |
+
+## Homicides in Baltimore
+
+``` r
+baltimore_df = 
+  read_csv("data/homicide-data.csv") |>
+  filter(city == "Baltimore") |>
+  mutate(
+    resolved = as.numeric(disposition == "closed by arrest"),
+    victim_age = as.numeric(victim_age),
+    victim_race = fct_relevel(victim_race, "White")) |> 
+  select(resolved, victim_age, victim_race, victim_sex)
+```
+
+    ## Rows: 52179 Columns: 12
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (9): uid, victim_last, victim_first, victim_race, victim_age, victim_sex...
+    ## dbl (3): reported_date, lat, lon
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+baltimore_df
+```
+
+    ## # A tibble: 2,827 × 4
+    ##    resolved victim_age victim_race victim_sex
+    ##       <dbl>      <dbl> <fct>       <chr>     
+    ##  1        0         17 Black       Male      
+    ##  2        0         26 Black       Male      
+    ##  3        0         21 Black       Male      
+    ##  4        0         61 White       Male      
+    ##  5        0         46 Black       Male      
+    ##  6        0         27 Black       Male      
+    ##  7        0         21 Black       Male      
+    ##  8        0         16 Black       Male      
+    ##  9        0         21 Black       Male      
+    ## 10        0         44 Black       Female    
+    ## # ℹ 2,817 more rows
+
+Fitting a logistic regression:
+
+``` r
+fit_logistic = 
+  baltimore_df |> 
+  glm(resolved ~ victim_age + victim_race + victim_sex, data = _, family = binomial()) 
+```
+
+    ## Warning: glm.fit: algorithm did not converge
+
+Look at model results
+
+``` r
+fit_logistic |>
+  broom::tidy() |>
+  mutate(OR = exp(estimate)) |>
+  select(term, estimate, OR)
+```
+
+    ## # A tibble: 7 × 3
+    ##   term                 estimate       OR
+    ##   <chr>                   <dbl>    <dbl>
+    ## 1 (Intercept)         -2.66e+ 1 2.90e-12
+    ## 2 victim_age           3.05e-15 1.00e+ 0
+    ## 3 victim_raceAsian     4.91e-15 1.00e+ 0
+    ## 4 victim_raceBlack    -7.38e-15 1.00e+ 0
+    ## 5 victim_raceHispanic  3.14e-14 1.00e+ 0
+    ## 6 victim_raceOther     3.24e-14 1.00e+ 0
+    ## 7 victim_sexMale      -2.86e-14 1.00e+ 0
