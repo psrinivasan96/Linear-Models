@@ -2,6 +2,8 @@ Linear Models
 ================
 Pavithra Srinivasan
 
+Loading Key Packages
+
 ``` r
 library(tidyverse)
 ```
@@ -8874,3 +8876,27 @@ fit |>
     ## 3 boroughBrooklyn    -49.8      2.23    -22.3  6.32e-109
     ## 4 boroughQueens      -77.0      3.73    -20.7  2.58e- 94
     ## 5 boroughBronx       -90.3      8.57    -10.5  6.64e- 26
+
+## Quick look at diagnostics
+
+``` r
+nyc_airbnb |>
+  modelr::add_residuals(fit) |>
+  ggplot(aes(x = stars, y = resid)) +
+  geom_violin()
+```
+
+    ## Warning: Removed 9962 rows containing non-finite values (`stat_ydensity()`).
+
+![](linear_models_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
+nyc_airbnb |>
+  modelr::add_residuals(fit) |>
+  ggplot(aes(x = stars, y = resid)) +
+  geom_point()
+```
+
+    ## Warning: Removed 9962 rows containing missing values (`geom_point()`).
+
+![](linear_models_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->

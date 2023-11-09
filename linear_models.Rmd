@@ -4,6 +4,8 @@ author: "Pavithra Srinivasan"
 output: github_document
 ---
 
+Loading Key Packages
+
 ```{r}
 library(tidyverse)
 library(p8105.datasets)
@@ -68,6 +70,18 @@ fit |>
   broom::tidy()
 ```
 
+## Quick look at diagnostics
+```{r}
+nyc_airbnb |>
+  modelr::add_residuals(fit) |>
+  ggplot(aes(x = stars, y = resid)) +
+  geom_violin()
+
+nyc_airbnb |>
+  modelr::add_residuals(fit) |>
+  ggplot(aes(x = stars, y = resid)) +
+  geom_point()
+```
 
 
 
